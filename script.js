@@ -260,6 +260,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Experience Section Toggle
+    const toggleBtn = document.getElementById('toggleExperience');
+    const moreExperience = document.getElementById('moreExperience');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (toggleBtn && moreExperience) {
+        toggleBtn.addEventListener('click', function() {
+            if (moreExperience.classList.contains('experience-collapsed')) {
+                // Expand
+                moreExperience.classList.remove('experience-collapsed');
+                moreExperience.classList.add('experience-expanded');
+                toggleBtn.classList.add('expanded');
+                toggleBtn.innerHTML = '<span id="toggleIcon">▼</span> Show Less Experience';
+            } else {
+                // Collapse
+                moreExperience.classList.remove('experience-expanded');
+                moreExperience.classList.add('experience-collapsed');
+                toggleBtn.classList.remove('expanded');
+                toggleBtn.innerHTML = '<span id="toggleIcon">▼</span> Show More Experience (6 more positions)';
+                
+                // Scroll to experience section
+                document.getElementById('experience').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+
     // Random retro phrases for alert (optional easter egg)
     const retroPhrases = [
         "You've got mail! 📧",
