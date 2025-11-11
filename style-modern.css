@@ -1,0 +1,620 @@
+/* Modern Minimalist Design */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #000000;
+    --secondary-color: #333333;
+    --text-color: #1a1a1a;
+    --text-light: #666666;
+    --bg-color: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --border-color: #e0e0e0;
+    --accent-color: #000000;
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #ffffff !important;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Remove any pseudo-elements that might show effects */
+body::before,
+body::after {
+    display: none !important;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--bg-color);
+    border: 1px solid var(--text-color);
+    padding: 10px 20px;
+    border-radius: 0;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text-color);
+    box-shadow: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.theme-toggle:hover {
+    background: var(--text-color);
+    color: white;
+}
+
+.theme-toggle #themeIcon {
+    display: none;
+}
+
+/* Hide all emojis and icons in modern mode */
+h2::before,
+h3::before {
+    content: none !important;
+}
+
+.emoji-icons {
+    display: none;
+}
+
+.pipe-separator {
+    display: inline;
+}
+
+/* Filter out all emoji characters */
+h2, h3, h4, p, li, td, span, b, i, a {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Hide emoji at the start of text content */
+h2, h3, b {
+    font-variant-emoji: text;
+}
+
+/* Target all text elements and filter emojis using CSS */
+* {
+    font-variant-emoji: text;
+}
+
+/* Specifically hide emojis in headers, paragraphs, and table cells */
+#about p b::first-line,
+#experience h3::first-line,
+#education h3::first-line,
+#contact a::first-line {
+    font-size: inherit;
+}
+
+/* Target specific sections to remove emoji prefix */
+#about h2::before { content: 'About Me'; font-size: 28px; font-weight: 700; }
+#about h2 { font-size: 0; }
+#about h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
+
+#experience h2::before { content: 'Professional Experience'; font-size: 28px; font-weight: 700; }
+#experience h2 { font-size: 0; }
+#experience h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
+
+#skills h2::before { content: 'Technical Skills'; font-size: 28px; font-weight: 700; }
+#skills h2 { font-size: 0; }
+#skills h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
+
+#education h2::before { content: 'Education & Certifications'; font-size: 28px; font-weight: 700; }
+#education h2 { font-size: 0; }
+#education h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
+
+#contact h2::before { content: 'Get In Touch'; font-size: 28px; font-weight: 700; }
+#contact h2 { font-size: 0; }
+#contact h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
+
+/* General emoji filtering for all text */
+p, li, td {
+    text-rendering: optimizeLegibility;
+}
+
+/* Remove emoji from subtitle */
+.subtitle {
+    font-size: 18px;
+}
+
+
+.header {
+    display: none; /* Hide retro marquee */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--bg-color);
+    border-radius: 0;
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Remove retro decorations */
+.container::before,
+.container::after {
+    display: none;
+}
+
+/* Hero Section */
+.hero-section {
+    background: var(--bg-color);
+    color: var(--text-color);
+    padding: 60px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color);
+    text-shadow: none;
+    animation: none;
+    letter-spacing: -1px;
+}
+
+h1 img {
+    display: none; /* Hide wave gifs */
+}
+
+.subtitle {
+    font-size: 18px;
+    color: var(--text-light);
+    font-weight: 400;
+    margin-top: 12px;
+}
+
+/* Navigation */
+.nav-container {
+    padding: 20px 40px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-container table {
+    width: 100%;
+    border: none;
+}
+
+.nav-container table td {
+    padding: 0 8px;
+}
+
+.button {
+    display: inline-block;
+    background: var(--bg-color);
+    color: var(--text-color);
+    padding: 10px 20px;
+    text-decoration: none;
+    border: 1px solid var(--text-color);
+    border-radius: 0;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: none;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.button:hover {
+    background: var(--text-color);
+    color: white;
+}
+
+.button:active {
+    background: var(--secondary-color);
+}
+
+/* Dividers */
+.retro-divider {
+    display: none;
+}
+
+/* Sections */
+.section {
+    padding: 40px;
+    animation: none;
+}
+
+.section:nth-child(even) {
+    background: var(--bg-secondary);
+}
+
+h2 {
+    color: var(--text-color);
+    background: none;
+    padding: 0;
+    border: none;
+    display: block;
+    margin-bottom: 24px;
+    font-size: 28px;
+    font-weight: 700;
+    text-shadow: none;
+    border-bottom: 2px solid var(--text-color);
+    padding-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+h3 {
+    color: var(--text-color);
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+}
+
+/* Tables */
+table {
+    border: none;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+table[border] {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+td {
+    padding: 20px;
+    border: none;
+    background: none !important;
+}
+
+table[border] td {
+    background: white !important;
+}
+
+/* About Section */
+#about table {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+}
+
+#about p {
+    margin: 12px 0;
+    color: var(--text-color);
+}
+
+#about p b {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* Experience Section */
+#experience table tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+#experience table tr:last-child {
+    border-bottom: none;
+}
+
+#experience h3 {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+#experience ul {
+    margin: 12px 0 12px 24px;
+}
+
+#experience li {
+    margin: 8px 0;
+    color: var(--text-color);
+}
+
+/* Skills Section */
+.skill-badge {
+    display: inline-block;
+    background: var(--bg-secondary);
+    color: var(--text-color);
+    padding: 8px 16px;
+    margin: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+    font-weight: 500;
+    font-size: 13px;
+    box-shadow: none;
+    animation: none;
+    transition: all 0.2s ease;
+}
+
+.skill-badge:hover {
+    background: var(--text-color);
+    color: white;
+    border-color: var(--text-color);
+}
+
+/* Hide retro table in modern mode */
+.skills-table-retro {
+    display: none !important;
+}
+
+/* Show grid in modern mode */
+#skills .skills-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+    max-width: 100%;
+}
+
+#skills .skill-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+#skills .skill-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--text-color);
+}
+
+#skills .skill-card b {
+    font-size: 18px;
+    color: var(--text-color);
+    display: block;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#skills .skill-card div {
+    text-align: center;
+    line-height: 1.8;
+}
+
+/* Education Section */
+#education table {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+}
+
+#education table tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+#education table tr:last-child {
+    border-bottom: none;
+}
+
+#education h3 {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+/* Contact Section */
+#contact table {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+}
+
+#contact h3 {
+    color: var(--text-color);
+}
+
+.contact-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: 1px solid var(--text-color);
+    background: white;
+    margin: 0 8px;
+    display: inline-block;
+    border-radius: 0;
+    transition: all 0.2s ease;
+}
+
+.contact-link:hover {
+    background: var(--text-color);
+    color: white;
+}
+
+/* Hide ALL emojis in modern mode using font that doesn't support them */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Make emojis invisible by color matching background */
+h2, h3, h4, p, b, i, td, li, a, span {
+    color: var(--text-color);
+}
+
+/* Hide emojis using a more aggressive approach - make them zero width */
+h2::first-letter,
+h3::first-letter {
+    display: inline;
+}
+
+/* Remove emojis from specific locations */
+#about p b,
+#experience h3,
+#education h3,
+#skills td b,
+#contact a {
+    display: inline-block;
+}
+
+/* Override to show only text, not emojis */
+.section h2,
+.section h3,
+.section p,
+.section b,
+.section li,
+.section td,
+.section a {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Footer */
+footer {
+    padding: 40px;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    text-align: center;
+}
+
+footer p {
+    margin: 12px 0;
+    color: var(--text-light);
+}
+
+footer marquee {
+    display: none;
+}
+
+footer img {
+    display: none; /* Hide retro badges in modern mode */
+}
+
+/* Hide Netscape message in modern mode */
+footer .blink {
+    display: none;
+}
+
+/* Blinking text - disable in modern */
+.blink {
+    animation: none;
+    color: var(--text-light);
+    font-weight: normal;
+}
+
+/* Links */
+a {
+    color: var(--text-color);
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--text-light);
+}
+
+a:visited {
+    color: var(--text-color);
+}
+
+/* Center tags */
+center {
+    text-align: center;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+    border: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-light);
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 10px 20px;
+        font-size: 12px;
+    }
+
+    .container {
+        border-radius: 12px;
+    }
+
+    .hero-section {
+        padding: 40px 20px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .section {
+        padding: 24px 20px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .nav-container {
+        padding: 16px 20px;
+    }
+
+    .button {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .skill-badge {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin: 3px;
+    }
+
+    .contact-link {
+        font-size: 14px;
+        padding: 6px 12px;
+        margin: 4px;
+    }
+    
+    /* Skills grid on mobile - single column */
+    #skills .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* Smooth transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
