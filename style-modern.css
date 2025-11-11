@@ -190,37 +190,37 @@ h1 img {
     border-bottom: 1px solid var(--border-color);
 }
 
-.nav-container table {
-    width: 100%;
-    border: none;
+.nav-container p {
+    margin: 0;
+    line-height: 2;
 }
 
-.nav-container table td {
-    padding: 0 8px;
-}
-
-.button {
-    display: inline-block;
-    background: var(--bg-color);
+.nav-link {
     color: var(--text-color);
-    padding: 10px 20px;
     text-decoration: none;
-    border: 1px solid var(--text-color);
-    border-radius: 0;
     font-weight: 500;
-    font-size: 14px;
-    text-transform: none;
-    box-shadow: none;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: 1px solid var(--text-color);
+    background: white;
+    margin: 0 8px;
+    display: inline-block;
+    border-radius: 0;
     transition: all 0.2s ease;
 }
 
-.button:hover {
+.nav-link:hover {
     background: var(--text-color);
     color: white;
 }
 
-.button:active {
+.nav-link:active {
     background: var(--secondary-color);
+}
+
+/* Pipe separator in navigation */
+.nav-container p {
+    color: var(--text-light);
 }
 
 /* Dividers */
@@ -630,6 +630,12 @@ center {
 
     .nav-container {
         padding: 16px 20px;
+    }
+
+    .nav-link {
+        padding: 8px 16px;
+        font-size: 13px;
+        margin: 4px;
     }
 
     .button {
