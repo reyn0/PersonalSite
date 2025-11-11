@@ -1,57 +1,47 @@
 # GitHub Pages Deployment Guide
 
-## Step 1: Create a GitHub Repository
+## Your Repository
+- **GitHub URL:** https://github.com/reyn0/PersonalSite
+- **GitHub Pages URL:** https://reyn0.github.io/PersonalSite/
 
-1. Go to [GitHub](https://github.com) and sign in
-2. Click the "+" icon in the top right → "New repository"
-3. Name your repository (e.g., `personal-site` or `portfolio`)
-4. Make it **Public** (required for free GitHub Pages)
-5. **Don't** initialize with README (we already have files)
-6. Click "Create repository"
+## Step 1: ✅ Repository Created
 
-## Step 2: Push Your Code to GitHub
+Your repository is already set up at: https://github.com/reyn0/PersonalSite
 
-After creating the repository, GitHub will show you commands. Run these in your terminal:
+## Step 2: ✅ Code Pushed
 
-```powershell
-# Add the remote repository (replace YOUR-USERNAME and YOUR-REPO-NAME)
-git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPO-NAME.git
-
-# Rename branch to main (GitHub's default)
-git branch -M main
-
-# Push your code
-git push -u origin main
-```
-
-**Example:**
-```powershell
-git remote add origin https://github.com/reynaldihadianto/personal-site.git
-git branch -M main
-git push -u origin main
-```
+Your code has been pushed to GitHub successfully!
 
 ## Step 3: Enable GitHub Pages
 
-1. Go to your repository on GitHub
-2. Click "Settings" (top menu)
-3. Click "Pages" (left sidebar)
-4. Under "Source":
+1. Go to https://github.com/reyn0/PersonalSite/settings/pages
+2. Under "Source":
    - Select branch: **main**
    - Select folder: **/ (root)**
-5. Click "Save"
+3. Click "Save"
 
-Your site will be published at: `https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/`
+Your site will be published at: **https://reyn0.github.io/PersonalSite/**
 
 **Wait 1-2 minutes** for the first deployment to complete.
 
-## Step 4: Configure Custom Domain (Optional)
+## Step 4: Verify Deployment
+
+1. Visit https://reyn0.github.io/PersonalSite/
+2. Check that:
+   - Modern theme loads by default
+   - Theme toggle works
+   - All sections display correctly
+   - Skills cards show properly
+   - Contact links work
+
+## Step 5: Configure Custom Domain (When Ready)
 
 ### On GitHub:
-1. In Pages settings, scroll to "Custom domain"
-2. Enter your domain: `yourdomain.com`
-3. Check "Enforce HTTPS" (after DNS propagates)
+1. Go to https://github.com/reyn0/PersonalSite/settings/pages
+2. Scroll to "Custom domain"
+3. Enter your domain: `yourdomain.com`
 4. Click "Save"
+5. Check "Enforce HTTPS" (after DNS propagates)
 
 ### On Your Domain Registrar:
 Add these DNS records:
@@ -79,7 +69,7 @@ Value: 185.199.111.153
 ```
 Type: CNAME
 Name: www
-Value: YOUR-USERNAME.github.io
+Value: reyn0.github.io
 ```
 
 ### Alternative (CNAME for apex):
@@ -87,14 +77,21 @@ If your registrar supports CNAME flattening:
 ```
 Type: CNAME
 Name: @
-Value: YOUR-USERNAME.github.io
+Value: reyn0.github.io
 ```
 
 **Note:** DNS changes can take 24-48 hours to propagate.
 
-## Step 5: Verify Deployment
+### Create CNAME file:
+When you have a domain, create a file named `CNAME` in the repository root with your domain:
+```
+yourdomain.com
+```
+Then commit and push it.
 
-1. Visit `https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/`
+## Step 6: Verify Deployment
+
+1. Visit https://reyn0.github.io/PersonalSite/
 2. Check that:
    - Modern theme loads by default
    - Theme toggle works
@@ -102,7 +99,7 @@ Value: YOUR-USERNAME.github.io
    - Skills cards show properly
    - Contact links work
 
-## Updating Your Site
+## Step 7: Updating Your Site
 
 Whenever you make changes:
 
@@ -113,6 +110,13 @@ git push
 ```
 
 GitHub Pages will automatically rebuild and deploy (takes 1-2 minutes).
+
+## Quick Links
+
+- **Repository:** https://github.com/reyn0/PersonalSite
+- **Settings:** https://github.com/reyn0/PersonalSite/settings/pages
+- **Actions (Build Status):** https://github.com/reyn0/PersonalSite/actions
+- **Live Site:** https://reyn0.github.io/PersonalSite/
 
 ## Troubleshooting
 
