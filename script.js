@@ -214,8 +214,14 @@ function removeEmojis() {
             }
             
             textNodes.forEach(node => {
-                if (!node.parentElement.closest('img')) {
-                    node.textContent = node.textContent.replace(emojiRegex, '').trim();
+                if (node.parentElement.closest('img')) {
+                    return;
+                }
+                const stripped = node.textContent.replace(emojiRegex, '');
+                // Only tidy whitespace on nodes that actually held an emoji.
+                // Untouched nodes keep the spaces that separate inline tags.
+                if (stripped !== node.textContent) {
+                    node.textContent = stripped.replace(/\s+/g, ' ').trim();
                 }
             });
         });
@@ -278,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 moreExperience.classList.remove('experience-expanded');
                 moreExperience.classList.add('experience-collapsed');
                 toggleBtn.classList.remove('expanded');
-                toggleBtn.innerHTML = '<span id="toggleIcon">▼</span> Show More Experience (6 more positions)';
+                toggleBtn.innerHTML = '<span id="toggleIcon">▼</span> Show More Experience (8 more positions)';
                 
                 // Scroll to experience section
                 document.getElementById('experience').scrollIntoView({ behavior: 'smooth', block: 'start' });
