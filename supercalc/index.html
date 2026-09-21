@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superannuation Growth Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        /* Hide scrollbar for cleaner UI */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased h-screen flex flex-col">
+
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col md:flex-row justify-between items-center z-10 shadow-sm">
+        <div class="flex items-center space-x-4">
+            <a href="../" class="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors" aria-label="Back to home page">&#8592; Home</a>
+            <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Superannuation Simulator</h1>
+        </div>
+        <div class="flex space-x-2 mt-4 md:mt-0 bg-slate-100 p-1 rounded-lg">
+            <button id="tab-acc" class="px-4 py-2 text-sm font-semibold rounded-md bg-white text-blue-600 shadow-sm transition-all">Accumulation</button>
+            <button id="tab-draw" class="px-4 py-2 text-sm font-semibold rounded-md text-slate-500 hover:text-slate-700 transition-all">Drawdown</button>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col md:flex-row overflow-hidden">
+        
+        <div class="w-full md:w-1/3 lg:w-1/4 bg-slate-50 border-r border-slate-200 p-6 overflow-y-auto no-scrollbar shadow-inner relative z-0">
+            
+            <!-- ACCUMULATION CONTROLS -->
+            <div id="controls-acc" class="flex flex-col space-y-6">
+                <h2 class="text-lg font-bold text-slate-800 border-b border-slate-200 pb-2">Accumulation Phase</h2>
+                
+                <!-- Current Age -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Current Age</label>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="currentAge" min="0" max="100" step="1" value="0" class="w-full">
+                        <input type="number" id="currentAgeNum" value="0" class="w-20 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-right">
+                    </div>
+                </div>
+
+                <!-- Retirement Age -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Retirement Age</label>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="retirementAge" min="0" max="100" step="1" value="0" class="w-full">
+                        <input type="number" id="retirementAgeNum" value="0" class="w-20 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-right">
+                    </div>
+                </div>
+
+                <!-- Current Balance -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Current Balance ($)</label>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="currentBalance" min="0" max="2000000" step="1000" value="0" class="w-full">
+                        <input type="number" id="currentBalanceNum" value="0" class="w-24 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-right">
+                    </div>
+                </div>
+
+                <!-- Annual Salary -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Annual Salary ($)</label>
+                    <p class="text-xs text-slate-500 mb-1">Calculates 12% SG automatically</p>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="annualSalary" min="0" max="500000" step="1000" value="0" class="w-full">
+                        <input type="number" id="annualSalaryNum" value="0" class="w-24 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-right">
+                    </div>
+                </div>
+
+                <!-- Annual Salary Sacrifice -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Annual Salary Sacrifice ($)</label>
+                    <p class="text-xs text-slate-500 mb-1">Gross pre-tax contribution</p>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="annualSacrifice" min="0" max="100000" step="1000" value="0" class="w-full">
+                        <input type="number" id="annualSacrificeNum" value="0" class="w-24 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-right">
+                    </div>
+                </div>
+
+                <!-- Real Return Rate -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Real Return Rate (%)</label>
+                    <p class="text-xs text-slate-500 mb-1">After inflation and fees</p>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="returnRate" min="0" max="15" step="0.1" value="0" class="w-full">
+                        <input type="number" id="returnRateNum" value="0" class="w-20 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-right">
+                    </div>
+                </div>
+            </div>
+
+            <!-- DRAWDOWN CONTROLS -->
+            <div id="controls-draw" class="flex flex-col space-y-6 hidden">
+                <h2 class="text-lg font-bold text-indigo-800 border-b border-indigo-200 pb-2">Retirement Drawdown</h2>
+                <div class="p-3 bg-indigo-50 border border-indigo-100 rounded-lg text-sm text-indigo-800">
+                    Starting balance is automatically pulled from your Accumulation projection.
+                </div>
+                
+                <!-- Annual Drawdown Income -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Annual Income Target ($)</label>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="drawIncome" min="0" max="250000" step="1000" value="0" class="w-full">
+                        <input type="number" id="drawIncomeNum" value="0" class="w-24 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-right">
+                    </div>
+                </div>
+
+                <!-- Post-Retirement Return Rate -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Pension Return Rate (%)</label>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="drawRate" min="0" max="15" step="0.1" value="0" class="w-full">
+                        <input type="number" id="drawRateNum" value="0" class="w-20 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-right">
+                    </div>
+                </div>
+
+                <h3 class="text-md font-semibold text-slate-800 pt-4 border-t border-slate-200 mt-4">One-Off Lump Sum</h3>
+                
+                <!-- One-Off Lump Sum -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Amount ($)</label>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="lumpSum" min="0" max="1000000" step="5000" value="0" class="w-full">
+                        <input type="number" id="lumpSumNum" value="0" class="w-24 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-right">
+                    </div>
+                </div>
+
+                <!-- One-Off Lump Sum Age -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Age of Withdrawal</label>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <input type="range" id="lumpSumAge" min="0" max="100" step="1" value="0" class="w-full">
+                        <input type="number" id="lumpSumAgeNum" value="0" class="w-20 p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-right">
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Close Left Column -->
+
+        <!-- Right Column: Dashboard & Chart -->
+        <div class="w-full md:w-2/3 lg:w-3/4 p-6 md:p-8 flex flex-col bg-white overflow-y-auto">
+            
+            <!-- Summary Cards: Accumulation -->
+            <div id="summary-acc" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-100 shadow-sm">
+                    <p class="text-sm text-blue-600 font-semibold mb-1 uppercase tracking-wide">Projected Balance</p>
+                    <p class="text-3xl font-bold text-blue-900" id="disp-acc-balance">$0</p>
+                    <p class="text-xs text-blue-700 mt-2">At retirement age</p>
+                </div>
+                <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100 shadow-sm">
+                    <p class="text-sm text-emerald-600 font-semibold mb-1 uppercase tracking-wide">Total Contributions</p>
+                    <p class="text-2xl font-bold text-emerald-900" id="disp-acc-contribs">$0</p>
+                    <p class="text-xs text-emerald-700 mt-2">Employer + Personal</p>
+                </div>
+                <div class="bg-amber-50 p-5 rounded-xl border border-amber-100 shadow-sm">
+                    <p class="text-sm text-amber-600 font-semibold mb-1 uppercase tracking-wide">Compound Growth</p>
+                    <p class="text-2xl font-bold text-amber-900" id="disp-acc-growth">$0</p>
+                    <p class="text-xs text-amber-700 mt-2">Investment earnings</p>
+                </div>
+            </div>
+
+            <!-- Summary Cards: Drawdown -->
+            <div id="summary-draw" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 hidden">
+                <div class="bg-indigo-50 p-5 rounded-xl border border-indigo-100 shadow-sm">
+                    <p class="text-sm text-indigo-600 font-semibold mb-1 uppercase tracking-wide">Starting Balance</p>
+                    <p class="text-3xl font-bold text-indigo-900" id="disp-draw-start">$0</p>
+                </div>
+                <div class="bg-rose-50 p-5 rounded-xl border border-rose-100 shadow-sm">
+                    <p class="text-sm text-rose-600 font-semibold mb-1 uppercase tracking-wide">Monthly Income</p>
+                    <p class="text-3xl font-bold text-rose-900" id="disp-draw-monthly">$0</p>
+                    <p class="text-xs text-rose-700 mt-2 font-semibold" id="disp-draw-annual">Annual: $0</p>
+                </div>
+                <div class="bg-teal-50 p-5 rounded-xl border border-teal-100 shadow-sm">
+                    <p class="text-sm text-teal-600 font-semibold mb-1 uppercase tracking-wide">Funds Last Until</p>
+                    <p class="text-3xl font-bold text-teal-900" id="disp-draw-last">Age 0</p>
+                </div>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="flex-grow relative min-h-[400px] w-full border border-slate-100 rounded-xl p-4 shadow-sm">
+                <canvas id="projectionChart"></canvas>
+            </div>
+            
+        </div> <!-- Close Right Column -->
+    </main>
+
+    <script>
+        // State variables all initialized to 0
+        const state = {
+            currentAge: 0,
+            retirementAge: 0,
+            currentBalance: 0,
+            annualSalary: 0,
+            annualSacrifice: 0,
+            returnRate: 0,
+            drawIncome: 0,
+            drawRate: 0,
+            lumpSum: 0,
+            lumpSumAge: 0
+        };
+
+        // Data arrays for charting
+        let accData = [];
+        let drawData = [];
+        let finalAccBalance = 0;
+        let fundsDepletedAge = 0;
+
+        let activeTab = 'acc'; // 'acc' or 'draw'
+        let chartInstance = null;
+
+        // Number Formatting
+        const formatCurrency = (val) => new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', maximumFractionDigits: 0 }).format(val);
+
+        // Bind DOM elements
+        const els = {
+            tabs: { acc: document.getElementById('tab-acc'), draw: document.getElementById('tab-draw') },
+            panels: { acc: document.getElementById('controls-acc'), draw: document.getElementById('controls-draw') },
+            summaries: { acc: document.getElementById('summary-acc'), draw: document.getElementById('summary-draw') },
+            displays: {
+                accBal: document.getElementById('disp-acc-balance'),
+                accCont: document.getElementById('disp-acc-contribs'),
+                accGrow: document.getElementById('disp-acc-growth'),
+                drawStart: document.getElementById('disp-draw-start'),
+                drawMonthly: document.getElementById('disp-draw-monthly'),
+                drawAnnual: document.getElementById('disp-draw-annual'),
+                drawLast: document.getElementById('disp-draw-last')
+            }
+        };
+
+        // Tab switching logic
+        const switchTab = (tab) => {
+            activeTab = tab;
+            if(tab === 'acc') {
+                els.tabs.acc.className = "px-4 py-2 text-sm font-semibold rounded-md bg-white text-blue-600 shadow-sm transition-all";
+                els.tabs.draw.className = "px-4 py-2 text-sm font-semibold rounded-md text-slate-500 hover:text-slate-700 transition-all";
+                els.panels.acc.classList.remove('hidden');
+                els.panels.draw.classList.add('hidden');
+                els.summaries.acc.classList.remove('hidden');
+                els.summaries.draw.classList.add('hidden');
+            } else {
+                els.tabs.draw.className = "px-4 py-2 text-sm font-semibold rounded-md bg-white text-indigo-600 shadow-sm transition-all";
+                els.tabs.acc.className = "px-4 py-2 text-sm font-semibold rounded-md text-slate-500 hover:text-slate-700 transition-all";
+                els.panels.draw.classList.remove('hidden');
+                els.panels.acc.classList.add('hidden');
+                els.summaries.draw.classList.remove('hidden');
+                els.summaries.acc.classList.add('hidden');
+            }
+            updateChart();
+        };
+
+        els.tabs.acc.addEventListener('click', () => switchTab('acc'));
+        els.tabs.draw.addEventListener('click', () => switchTab('draw'));
+
+        // Sync dual inputs (range <-> number) and update state
+        const bindInput = (id, stateKey) => {
+            const range = document.getElementById(id);
+            const num = document.getElementById(id + 'Num');
+            
+            const update = (val) => {
+                let v = parseFloat(val) || 0;
+                range.value = v;
+                num.value = v;
+                state[stateKey] = v;
+                calculateData();
+                updateDisplays();
+                updateChart();
+            };
+
+            range.addEventListener('input', (e) => update(e.target.value));
+            num.addEventListener('input', (e) => update(e.target.value));
+        };
+
+        bindInput('currentAge', 'currentAge');
+        bindInput('retirementAge', 'retirementAge');
+        bindInput('currentBalance', 'currentBalance');
+        bindInput('annualSalary', 'annualSalary');
+        bindInput('annualSacrifice', 'annualSacrifice');
+        bindInput('returnRate', 'returnRate');
+        bindInput('drawIncome', 'drawIncome');
+        bindInput('drawRate', 'drawRate');
+        bindInput('lumpSum', 'lumpSum');
+        bindInput('lumpSumAge', 'lumpSumAge');
+
+        // Ensure lumpSumAge slider respects retirement age
+        document.getElementById('retirementAge').addEventListener('input', (e) => {
+            document.getElementById('lumpSumAge').min = e.target.value;
+        });
+        document.getElementById('retirementAgeNum').addEventListener('input', (e) => {
+            document.getElementById('lumpSumAge').min = e.target.value;
+        });
+
+        const calculateData = () => {
+            // 1. Accumulation Phase
+            accData = [];
+            let bal = state.currentBalance;
+            let totalEmployer = 0;
+            let totalPersonal = 0;
+            let totalGrowth = 0;
+            const rate = state.returnRate / 100;
+            
+            // Tax constants
+            const SG_RATE = 0.12;
+            const SUPER_TAX = 0.15;
+
+            // Prevent negative loops if age is invalid
+            let start = Math.max(0, state.currentAge);
+            let end = Math.max(start, state.retirementAge);
+
+            if(start <= end && start !== 0 && end !== 0) {
+                // Add Initial state
+                accData.push({
+                    age: start,
+                    base: bal,
+                    employer: 0,
+                    personal: 0,
+                    growth: 0,
+                    total: bal
+                });
+
+                for(let age = start + 1; age <= end; age++) {
+                    const employerGross = state.annualSalary * SG_RATE;
+                    const employerNet = employerGross * (1 - SUPER_TAX);
+                    
+                    const personalNet = state.annualSacrifice * (1 - SUPER_TAX);
+                    
+                    const growth = bal * rate;
+                    
+                    bal += employerNet + personalNet + growth;
+                    
+                    totalEmployer += employerNet;
+                    totalPersonal += personalNet;
+                    totalGrowth += growth;
+                    
+                    accData.push({
+                        age: age,
+                        base: state.currentBalance,
+                        employer: totalEmployer,
+                        personal: totalPersonal,
+                        growth: totalGrowth,
+                        total: bal
+                    });
+                }
+            } else if (start === 0 && end === 0) {
+                // Blank slate handle
+                accData = [];
+            }
+            
+            finalAccBalance = bal;
+
+            // 2. Drawdown Phase
+            drawData = [];
+            let dBal = finalAccBalance;
+            const dRate = state.drawRate / 100;
+            fundsDepletedAge = 0;
+
+            if (end > 0 && dBal > 0) {
+                drawData.push({ age: end, balance: dBal });
+                
+                let currentDrawAge = end;
+                while(dBal > 0 && currentDrawAge <= 100) {
+                    currentDrawAge++;
+                    
+                    // Add growth
+                    dBal += (dBal * dRate);
+                    
+                    // Subtract lump sum if applicable
+                    if(currentDrawAge === state.lumpSumAge) {
+                        dBal -= state.lumpSum;
+                    }
+                    
+                    // Subtract income
+                    dBal -= state.drawIncome;
+                    
+                    if(dBal < 0) dBal = 0;
+                    
+                    drawData.push({ age: currentDrawAge, balance: dBal });
+                    
+                    if(dBal === 0 && fundsDepletedAge === 0) {
+                        fundsDepletedAge = currentDrawAge;
+                    }
+                }
+                if (dBal > 0 && currentDrawAge > 100) fundsDepletedAge = "100+";
+            }
+        };
+
+        const updateDisplays = () => {
+            // Accumulation
+            els.displays.accBal.innerText = formatCurrency(finalAccBalance);
+            
+            let lastAcc = accData.length > 0 ? accData[accData.length - 1] : null;
+            els.displays.accCont.innerText = lastAcc ? formatCurrency(lastAcc.employer + lastAcc.personal) : '$0';
+            els.displays.accGrow.innerText = lastAcc ? formatCurrency(lastAcc.growth) : '$0';
+
+            // Drawdown
+            els.displays.drawStart.innerText = formatCurrency(finalAccBalance);
+            els.displays.drawAnnual.innerText = `Annual: ${formatCurrency(state.drawIncome)}`;
+            els.displays.drawMonthly.innerText = formatCurrency(state.drawIncome / 12) + ' /mo';
+            
+            if(fundsDepletedAge === 0) {
+                els.displays.drawLast.innerText = "--";
+            } else {
+                els.displays.drawLast.innerText = `Age ${fundsDepletedAge}`;
+            }
+        };
+
+        const updateChart = () => {
+            const ctx = document.getElementById('projectionChart').getContext('2d');
+            
+            if(chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Handle empty state gracefully
+            if (state.currentAge === 0 && state.retirementAge === 0) {
+                 chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: [], datasets: [] },
+                    options: { 
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { title: { display: true, text: 'Adjust sliders to begin calculation', color: '#94a3b8' } },
+                        scales: { x: { display: false }, y: { display: false } }
+                    }
+                });
+                return;
+            }
+
+            if (activeTab === 'acc') {
+                const labels = accData.map(d => d.age);
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Starting Balance',
+                                data: accData.map(d => d.base),
+                                borderColor: 'rgba(148, 163, 184, 1)',
+                                backgroundColor: 'rgba(148, 163, 184, 0.4)',
+                                fill: true,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Employer (12% SG)',
+                                data: accData.map(d => d.employer),
+                                borderColor: 'rgba(59, 130, 246, 1)',
+                                backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                                fill: true,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Personal Sacrifice',
+                                data: accData.map(d => d.personal),
+                                borderColor: 'rgba(16, 185, 129, 1)',
+                                backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                                fill: true,
+                                pointRadius: 0
+                            },
+                            {
+                                label: 'Compound Growth',
+                                data: accData.map(d => d.growth),
+                                borderColor: 'rgba(245, 158, 11, 1)',
+                                backgroundColor: 'rgba(245, 158, 11, 0.6)',
+                                fill: true,
+                                pointRadius: 0
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            x: { stacked: true, title: { display: true, text: 'Age' } },
+                            y: { stacked: true, title: { display: true, text: 'Balance ($)' }, ticks: { callback: (val) => '$' + (val / 1000) + 'k' } }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                const labels = drawData.map(d => d.age);
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Remaining Balance',
+                            data: drawData.map(d => d.balance),
+                            borderColor: 'rgba(99, 102, 241, 1)',
+                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { title: { display: true, text: 'Age' } },
+                            y: { title: { display: true, text: 'Balance ($)' }, ticks: { callback: (val) => '$' + (val / 1000) + 'k' } }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Balance: ' + formatCurrency(context.parsed.y);
+                                    }
+                                }
+                            },
+                            annotation: {
+                                // Fallback annotation if plugin is missing - ChartJS handles this gracefully
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
+        // Initialize empty state on load
+        calculateData();
+        updateDisplays();
+        updateChart();
+
+    </script>
+</body>
+</html>

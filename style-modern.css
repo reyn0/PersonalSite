@@ -113,6 +113,10 @@ h2, h3, b {
 #skills h2 { font-size: 0; }
 #skills h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
 
+#tools h2::before { content: 'Tools & Calculators'; font-size: 28px; font-weight: 700; }
+#tools h2 { font-size: 0; }
+#tools h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
+
 #education h2::before { content: 'Education & Certifications'; font-size: 28px; font-weight: 700; }
 #education h2 { font-size: 0; }
 #education h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
@@ -429,6 +433,30 @@ table[border] td {
 #skills .skill-card div {
     text-align: center;
     line-height: 1.8;
+}
+
+/* Tools Section */
+#tools table {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 0;
+}
+
+#tools table tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+#tools table tr:last-child {
+    border-bottom: none;
+}
+
+#tools h3 {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+#tools p {
+    color: var(--text-color);
 }
 
 /* Education Section */

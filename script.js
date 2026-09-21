@@ -191,7 +191,7 @@ function removeEmojis() {
     // Target all text elements
     const selectors = [
         'h2', 'h3', 'p b', '#experience h3', '#education h3', 
-        '#skills td b', '#contact a', 'li'
+        '#skills td b', '#tools a', '#contact a', 'li'
     ];
     
     selectors.forEach(selector => {

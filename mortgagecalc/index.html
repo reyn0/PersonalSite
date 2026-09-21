@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Offset Simulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            padding: 20px; 
+            background-color: #f4f7f6; 
+            color: #333; 
+            margin: 0;
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+        }
+        h2 { 
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+        .home-link {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .home-link a {
+            color: #555;
+            text-decoration: none;
+        }
+        .home-link a:hover,
+        .home-link a:focus {
+            color: #1a73e8;
+            text-decoration: underline;
+        }
+        
+        .tab-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .tabs-left {
+            display: flex;
+            gap: 10px;
+        }
+        .reset-btn {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            margin-bottom: 5px;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .reset-btn:hover { background-color: #f0f0f0; }
+
+        .tab {
+            padding: 10px 25px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #777;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            border-radius: 6px 6px 0 0;
+        }
+        .tab:hover { background-color: #f8f9fa; color: #333; }
+        
+        .metrics-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ccc;
+        }
+        .metric-card h4 { margin: 0 0 12px 0; font-size: 15px; color: #444; }
+        .metric-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #555;}
+        .metric-val { font-weight: bold; font-size: 16px; color: #222; }
+
+        .controls { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 25px; 
+            margin-bottom: 30px; 
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        @media (max-width: 600px) {
+            .controls { grid-template-columns: 1fr; }
+        }
+        .control-group { display: flex; flex-direction: column; }
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        label { font-weight: 600; font-size: 14px; margin: 0; }
+        input[type="range"] { width: 100%; margin-bottom: 5px; cursor: pointer; }
+        
+        .val-input { 
+            font-size: 14px; 
+            color: #333; 
+            font-weight: bold; 
+            text-align: right; 
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 6px 8px;
+            width: 110px;
+            transition: border-color 0.2s;
+        }
+        .val-input:focus { outline: none; border-color: #0b57d0; }
+        
+        canvas { max-width: 100%; margin-bottom: 20px;}
+        
+        .table-container {
+            margin-top: 30px;
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid #eee;
+        }
+        .table-container h3 {
+            text-align: center;
+            color: #444;
+            margin: 20px 0 15px 0;
+            font-size: 18px;
+        }
+        table { width: 100%; border-collapse: collapse; background: #fff; font-size: 14px; }
+        th, td { padding: 12px 15px; text-align: right; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #555; font-weight: 600; }
+        th:first-child, td:first-child { text-align: center; }
+        tbody tr:hover { background-color: #f1f7fc; }
+        .saved-col { color: #146c2e; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="home-link"><a href="../" aria-label="Back to home page">&#8592; Home</a></p>
+        <h2>Mortgage Comparison Simulator</h2>
+        
+        <div class="tab-container">
+            <div class="tabs-left" id="tabsContainer">
+                <!-- Tabs generated dynamically by JS -->
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="reset-btn" onclick="addScenario()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Add Scenario
+                </button>
+                <button class="reset-btn" onclick="removeScenario()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    Remove
+                </button>
+                <button class="reset-btn" onclick="resetCurrentScenario()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    Reset
+                </button>
+            </div>
+        </div>
+
+        <div class="metrics-comparison" id="metricsContainer">
+            <!-- Scorecards generated dynamically by JS -->
+        </div>
+
+        <div class="controls" id="controlsPanel">
+            <div class="control-group">
+                <div class="control-header">
+                    <label>Loan Balance ($)</label>
+                    <input type="number" id="loanInput" class="val-input" value="0" step="1000">
+                </div>
+                <input type="range" id="loanSlider" min="0" max="2000000" step="1000" value="0">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-header">
+                    <label>Interest Rate (%)</label>
+                    <input type="number" id="rateInput" class="val-input" value="0" step="0.05">
+                </div>
+                <input type="range" id="rateSlider" min="0" max="10.0" step="0.05" value="0">
+            </div>
+
+            <div class="control-group">
+                <div class="control-header">
+                    <label>Monthly Repayment ($) <br><span style="color:#888;font-weight:normal;font-size:12px;" id="minPaymentText">(Min: $0)</span></label>
+                    <input type="number" id="paymentInput" class="val-input" value="0" step="50">
+                </div>
+                <input type="range" id="paymentSlider" min="0" max="15000" step="50" value="0">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-header">
+                    <label>Initial Offset ($)</label>
+                    <input type="number" id="offsetInput" class="val-input" value="0" step="1000">
+                </div>
+                <input type="range" id="offsetSlider" min="0" max="1000000" step="1000" value="0">
+            </div>
+            
+            <div class="control-group">
+                <div class="control-header">
+                    <label>Monthly Offset Addition ($)</label>
+                    <input type="number" id="offsetAddInput" class="val-input" value="0" step="100">
+                </div>
+                <input type="range" id="offsetAddSlider" min="0" max="5000" step="100" value="0">
+            </div>
+        </div>
+
+        <canvas id="mortgageChart"></canvas>
+
+        <div class="table-container">
+            <h3 id="tableTitle">Yearly Breakdown (Scenario 1)</h3>
+            <table id="amortizationTable">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Recalculated Repayment<br><span style="font-size:11px;font-weight:normal;color:#888;">(If requested from bank)</span></th>
+                        <th>Offset Balance</th>
+                        <th>Remaining Balance</th>
+                        <th>Interest Paid</th>
+                        <th>Interest Saved (by Offset)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows generated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const rateSlider = document.getElementById('rateSlider');
+        const offsetSlider = document.getElementById('offsetSlider');
+        const paymentSlider = document.getElementById('paymentSlider');
+        const loanSlider = document.getElementById('loanSlider');
+        const offsetAddSlider = document.getElementById('offsetAddSlider');
+        
+        const rateInput = document.getElementById('rateInput');
+        const offsetInput = document.getElementById('offsetInput');
+        const paymentInput = document.getElementById('paymentInput');
+        const loanInput = document.getElementById('loanInput');
+        const offsetAddInput = document.getElementById('offsetAddInput');
+        
+        const tbody = document.querySelector('#amortizationTable tbody');
+        let chartInstance = null;
+
+        // Dynamic Colors for up to 6 Scenarios
+        const themeColors = ['#0b57d0', '#146c2e', '#b3261e', '#f9ab00', '#681da8', '#00838f'];
+        const themeBgColors = [
+            'rgba(11, 87, 208, 0.1)', 
+            'rgba(20, 108, 46, 0.1)', 
+            'rgba(179, 38, 30, 0.1)', 
+            'rgba(249, 171, 0, 0.1)', 
+            'rgba(104, 29, 168, 0.1)',
+            'rgba(0, 131, 143, 0.1)'
+        ];
+
+        // Core State
+        let currentTab = 0;
+        let scenarios = [
+            { loan: 0, rate: 0, payment: 0, offset: 0, offsetAdd: 0, isManuallySet: false }, // Scenario 1
+            { loan: 0, rate: 0, payment: 0, offset: 0, offsetAdd: 0, isManuallySet: false }  // Scenario 2
+        ];
+
+        function formatCurrency(num) {
+            return '$' + num.toLocaleString('en-US', {maximumFractionDigits: 0});
+        }
+        
+        function formatTime(customData) {
+            if (customData.months === 0) return "0.0 Yrs";
+            return customData.months >= 360 && customData.data[customData.data.length-1] > 0 
+                ? "30+ Yrs (Increase Payment!)" 
+                : (customData.months / 12).toFixed(1) + ' Yrs';
+        }
+
+        function getCalculatedMinPayment(principal, annualRate) {
+            if (principal <= 0) return 0;
+            if (annualRate <= 0) return principal / 360;
+            const r = annualRate / 100 / 12;
+            return (principal * r * Math.pow(1 + r, 360)) / (Math.pow(1 + r, 360) - 1);
+        }
+
+        function calculateAmortization(principal, rate, initialOffset, payment, offsetAddition) {
+            let balance = principal;
+            let currentOffset = initialOffset;
+            let data = [balance];
+            let months = 0;
+            let totalInterest = 0;
+            let monthlyRate = rate / 100 / 12;
+
+            if (principal <= 0) return { data: [], months: 0, totalInterest: 0 };
+
+            while (balance > 0 && months < 360) {
+                let interest = Math.max(0, (balance - currentOffset)) * monthlyRate;
+                let principalPayment = payment - interest;
+                
+                if (principalPayment <= 0) {
+                    break; 
+                }
+                
+                balance -= principalPayment;
+                totalInterest += interest;
+                months++;
+                data.push(Math.max(0, balance));
+                currentOffset += offsetAddition;
+            }
+            return { data, months, totalInterest };
+        }
+
+        function renderTable(loan, rate, initialOffset, payment, offsetAddition) {
+            tbody.innerHTML = '';
+            if (loan <= 0) return;
+
+            let balance = loan;
+            let currentOffset = initialOffset;
+            let monthlyRate = rate / 100 / 12;
+            let year = 1;
+            let interestPaidThisYear = 0;
+            let interestSavedThisYear = 0;
+            
+            if (balance > 0 && payment > 0 && payment <= (balance - currentOffset) * monthlyRate) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Payment is too low to cover interest. Loan will not be paid off.</td></tr>';
+                return;
+            }
+
+            for(let month = 1; month <= 360; month++) {
+                if (balance <= 0) break;
+
+                let interestWithoutOffset = balance * monthlyRate;
+                let interestWithOffset = Math.max(0, (balance - currentOffset)) * monthlyRate;
+                let principalPayment = payment - interestWithOffset;
+                
+                if (principalPayment <= 0) break;
+                
+                interestPaidThisYear += interestWithOffset;
+                interestSavedThisYear += (interestWithoutOffset - interestWithOffset);
+                balance -= principalPayment;
+                balance = Math.max(0, balance);
+                currentOffset += offsetAddition;
+
+                if (month % 12 === 0 || balance === 0) {
+                    let remainingMonths = 360 - month;
+                    let recalculatedPayment = 0;
+                    
+                    if (remainingMonths > 0 && balance > 0) {
+                        if (monthlyRate === 0) {
+                            recalculatedPayment = balance / remainingMonths;
+                        } else {
+                            recalculatedPayment = (balance * monthlyRate * Math.pow(1 + monthlyRate, remainingMonths)) / (Math.pow(1 + monthlyRate, remainingMonths) - 1);
+                        }
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${year}</td>
+                        <td>${formatCurrency(recalculatedPayment)}</td>
+                        <td>${formatCurrency(currentOffset)}</td>
+                        <td>${formatCurrency(balance)}</td>
+                        <td>${formatCurrency(interestPaidThisYear)}</td>
+                        <td class="saved-col">${formatCurrency(interestSavedThisYear)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                    
+                    year++;
+                    interestPaidThisYear = 0;
+                    interestSavedThisYear = 0;
+                }
+            }
+        }
+
+        function renderTabsAndMetrics() {
+            const tabsContainer = document.getElementById('tabsContainer');
+            const metricsContainer = document.getElementById('metricsContainer');
+            
+            tabsContainer.innerHTML = '';
+            metricsContainer.innerHTML = '';
+
+            scenarios.forEach((s, index) => {
+                const color = themeColors[index % themeColors.length];
+                
+                // Create Tab
+                const tab = document.createElement('div');
+                tab.className = `tab ${currentTab === index ? 'active' : ''}`;
+                tab.innerText = `Scenario ${index + 1}`;
+                tab.onclick = () => switchTab(index);
+                
+                if (currentTab === index) {
+                    tab.style.color = color;
+                    tab.style.borderBottomColor = color;
+                }
+                tabsContainer.appendChild(tab);
+
+                // Create Scorecard
+                const card = document.createElement('div');
+                card.className = 'metric-card';
+                card.style.borderLeftColor = color;
+                card.innerHTML = `
+                    <h4>Scenario ${index + 1} Outcomes</h4>
+                    <div class="metric-row"><span>Time to Pay Off:</span> <span class="metric-val" id="s${index}-time" style="color:${color}">0.0 Yrs</span></div>
+                    <div class="metric-row"><span>Total Interest:</span> <span class="metric-val" id="s${index}-interest">$0</span></div>
+                `;
+                metricsContainer.appendChild(card);
+            });
+        }
+
+        function switchTab(tabIndex) {
+            currentTab = tabIndex;
+            renderTabsAndMetrics();
+            
+            // Sync controls styling with current tab's color
+            const panel = document.getElementById('controlsPanel');
+            panel.style.borderTop = `4px solid ${themeColors[tabIndex % themeColors.length]}`;
+            
+            // Load state to inputs
+            const s = scenarios[tabIndex];
+            loanInput.value = loanSlider.value = s.loan;
+            rateInput.value = rateSlider.value = s.rate;
+            paymentInput.value = paymentSlider.value = s.payment;
+            offsetInput.value = offsetSlider.value = s.offset;
+            offsetAddInput.value = offsetAddSlider.value = s.offsetAdd;
+            
+            document.getElementById('tableTitle').innerText = `Yearly Breakdown (Scenario ${tabIndex + 1})`;
+            
+            handleLoanOrRateChange();
+        }
+
+        function addScenario() {
+            if (scenarios.length >= 6) {
+                return; // Cap at 6 to keep it clean visually
+            }
+            scenarios.push({ loan: 0, rate: 0, payment: 0, offset: 0, offsetAdd: 0, isManuallySet: false });
+            switchTab(scenarios.length - 1);
+        }
+
+        function removeScenario() {
+            if (scenarios.length <= 1) {
+                resetCurrentScenario(); // Don't remove the last tab, just clear it
+                return;
+            }
+            scenarios.splice(currentTab, 1);
+            if (currentTab >= scenarios.length) {
+                currentTab = scenarios.length - 1;
+            }
+            switchTab(currentTab);
+        }
+
+        function resetCurrentScenario() {
+            scenarios[currentTab] = { loan: 0, rate: 0, payment: 0, offset: 0, offsetAdd: 0, isManuallySet: false };
+            loanInput.value = loanSlider.value = 0;
+            rateInput.value = rateSlider.value = 0;
+            paymentInput.value = paymentSlider.value = 0;
+            offsetInput.value = offsetSlider.value = 0;
+            offsetAddInput.value = offsetAddSlider.value = 0;
+            handleLoanOrRateChange();
+        }
+
+        function syncInputsToState() {
+            const s = scenarios[currentTab];
+            s.loan = parseFloat(loanInput.value) || 0;
+            s.rate = parseFloat(rateInput.value) || 0;
+            s.payment = parseFloat(paymentInput.value) || 0;
+            s.offset = parseFloat(offsetInput.value) || 0;
+            s.offsetAdd = parseFloat(offsetAddInput.value) || 0;
+        }
+
+        function handleLoanOrRateChange() {
+            syncInputsToState();
+            const s = scenarios[currentTab];
+            
+            const minPayment = Math.ceil(getCalculatedMinPayment(s.loan, s.rate));
+            document.getElementById('minPaymentText').innerText = '(Min: ' + formatCurrency(minPayment) + ')';
+            paymentSlider.min = minPayment; 
+            
+            if (!s.isManuallySet || s.payment < minPayment) {
+                paymentInput.value = minPayment;
+                paymentSlider.value = minPayment;
+                s.payment = minPayment;
+                if (s.payment < minPayment) s.isManuallySet = false;
+            }
+            updateChart();
+        }
+
+        function updateChart() {
+            syncInputsToState();
+
+            // Render Table for Active Tab
+            const active = scenarios[currentTab];
+            renderTable(active.loan, active.rate, active.offset, active.payment, active.offsetAdd);
+
+            let maxLength = 1;
+            const datasets = scenarios.map((s, index) => {
+                const c = calculateAmortization(s.loan, s.rate, s.offset, s.payment, s.offsetAdd);
+                
+                // Update Scorecard dynamically
+                const timeEl = document.getElementById(`s${index}-time`);
+                const intEl = document.getElementById(`s${index}-interest`);
+                if (timeEl) timeEl.innerText = formatTime(c);
+                if (intEl) intEl.innerText = formatCurrency(c.totalInterest);
+                
+                if (c.data.length > maxLength) maxLength = c.data.length;
+
+                return {
+                    label: `Scenario ${index + 1} (${s.rate}%, $${(s.offset/1000).toFixed(0)}k Offset)`,
+                    data: c.data.length > 0 ? c.data : [0],
+                    borderColor: themeColors[index % themeColors.length],
+                    backgroundColor: themeBgColors[index % themeBgColors.length],
+                    fill: true,
+                    pointRadius: 0,
+                    borderWidth: 3
+                };
+            });
+
+            const labels = Array.from({length: maxLength}, (_, i) => (i/12).toFixed(1));
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('mortgageChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: { labels: labels, datasets: datasets },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { tooltip: { enabled: true } },
+                    scales: {
+                        x: { title: { display: true, text: 'Years' } },
+                        y: { 
+                            title: { display: true, text: 'Remaining Balance ($)' },
+                            ticks: { callback: function(value) { return '$' + (value/1000) + 'k'; } }
+                        }
+                    }
+                }
+            });
+        }
+
+        const pairs = [
+            { slider: rateSlider, input: rateInput },
+            { slider: loanSlider, input: loanInput },
+            { slider: offsetSlider, input: offsetInput },
+            { slider: offsetAddSlider, input: offsetAddInput }
+        ];
+
+        pairs.forEach(pair => {
+            pair.slider.addEventListener('input', () => { pair.input.value = pair.slider.value; handleLoanOrRateChange(); });
+            pair.input.addEventListener('input', () => { pair.slider.value = pair.input.value; handleLoanOrRateChange(); });
+        });
+
+        paymentSlider.addEventListener('input', () => {
+            scenarios[currentTab].isManuallySet = true;
+            paymentInput.value = paymentSlider.value;
+            updateChart();
+        });
+        paymentInput.addEventListener('input', () => {
+            scenarios[currentTab].isManuallySet = true;
+            paymentSlider.value = paymentInput.value;
+            updateChart();
+        });
+
+        // Initialize App
+        switchTab(0);
+    </script>
+</body>
+</html>
