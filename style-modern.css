@@ -113,10 +113,6 @@ h2, h3, b {
 #skills h2 { font-size: 0; }
 #skills h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
 
-#tools h2::before { content: 'Tools & Calculators'; font-size: 28px; font-weight: 700; }
-#tools h2 { font-size: 0; }
-#tools h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
-
 #education h2::before { content: 'Education & Certifications'; font-size: 28px; font-weight: 700; }
 #education h2 { font-size: 0; }
 #education h2::before { font-size: 28px; display: block; border-bottom: 2px solid var(--text-color); padding-bottom: 12px; margin-bottom: 24px; color: var(--text-color); }
@@ -435,30 +431,6 @@ table[border] td {
     line-height: 1.8;
 }
 
-/* Tools Section */
-#tools table {
-    background: white;
-    border: 1px solid var(--border-color);
-    border-radius: 0;
-}
-
-#tools table tr {
-    border-bottom: 1px solid var(--border-color);
-}
-
-#tools table tr:last-child {
-    border-bottom: none;
-}
-
-#tools h3 {
-    color: var(--text-color);
-    font-weight: 600;
-}
-
-#tools p {
-    color: var(--text-color);
-}
-
 /* Education Section */
 #education table {
     background: white;
@@ -562,6 +534,33 @@ footer p {
 
 footer marquee {
     display: none;
+}
+
+/* Understated side project links */
+.footer-tools {
+    margin-top: 4px;
+}
+
+.footer-tools small {
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+.footer-tools a {
+    color: var(--text-light);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.footer-tools a:hover,
+.footer-tools a:focus {
+    color: var(--text-color);
+    border-bottom-color: var(--text-color);
+}
+
+.footer-tools a:focus-visible {
+    outline: 2px solid var(--text-color);
+    outline-offset: 2px;
 }
 
 footer img {

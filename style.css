@@ -304,6 +304,25 @@ footer small {
     color: #666;
 }
 
+/* Understated side project links */
+.footer-tools {
+    margin-top: 4px;
+}
+
+.footer-tools small {
+    font-size: 12px;
+    color: #666;
+}
+
+.footer-tools a {
+    color: #0000AA;
+}
+
+.footer-tools a:hover,
+.footer-tools a:focus {
+    color: #AA00AA;
+}
+
 /* Under construction GIF style effect */
 .construction {
     animation: shake 0.5s infinite;
