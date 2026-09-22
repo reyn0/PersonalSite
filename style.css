@@ -323,6 +323,28 @@ footer small {
     color: #AA00AA;
 }
 
+/* Visit counter, styled like a classic hit counter */
+.visitor-counter {
+    margin-top: 10px;
+}
+
+.visitor-counter small {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: #00FF00;
+    background: #000;
+    border: 3px inset #808080;
+    padding: 4px 12px;
+    letter-spacing: 2px;
+}
+
+/* The counter stays out of view until a number arrives. */
+[hidden] {
+    display: none !important;
+}
+
 /* Under construction GIF style effect */
 .construction {
     animation: shake 0.5s infinite;

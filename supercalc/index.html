@@ -20,6 +20,9 @@
         <div class="flex items-center space-x-4">
             <a href="../" class="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors" aria-label="Back to home page">&#8592; Home</a>
             <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Superannuation Simulator</h1>
+            <span id="visitorCounter" class="text-xs text-slate-400 whitespace-nowrap" hidden>
+                <span id="visitCount">0</span> views
+            </span>
         </div>
         <div class="flex space-x-2 mt-4 md:mt-0 bg-slate-100 p-1 rounded-lg">
             <button id="tab-acc" class="px-4 py-2 text-sm font-semibold rounded-md bg-white text-blue-600 shadow-sm transition-all">Accumulation</button>
@@ -534,5 +537,6 @@
         updateChart();
 
     </script>
+    <script src="../counter.js"></script>
 </body>
 </html>

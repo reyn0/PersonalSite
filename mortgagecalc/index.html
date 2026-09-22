@@ -39,6 +39,11 @@
             color: #1a73e8;
             text-decoration: underline;
         }
+        .visitor-counter {
+            color: #999;
+            font-weight: 400;
+        }
+        [hidden] { display: none !important; }
         
         .tab-container {
             display: flex;
@@ -158,7 +163,12 @@
 </head>
 <body>
     <div class="container">
-        <p class="home-link"><a href="../" aria-label="Back to home page">&#8592; Home</a></p>
+        <p class="home-link">
+            <a href="../" aria-label="Back to home page">&#8592; Home</a>
+            <span class="visitor-counter" id="visitorCounter" hidden>
+                &middot; <span id="visitCount">0</span> views
+            </span>
+        </p>
         <h2>Mortgage Comparison Simulator</h2>
         
         <div class="tab-container">
@@ -582,5 +592,6 @@
         // Initialize App
         switchTab(0);
     </script>
+    <script src="../counter.js"></script>
 </body>
 </html>

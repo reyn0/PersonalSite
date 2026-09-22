@@ -563,6 +563,21 @@ footer marquee {
     outline-offset: 2px;
 }
 
+/* Visit counter */
+.visitor-counter {
+    margin-top: 4px;
+}
+
+.visitor-counter small {
+    font-size: 13px;
+    color: var(--text-light);
+}
+
+/* The counter stays out of view until a number arrives. */
+[hidden] {
+    display: none !important;
+}
+
 footer img {
     display: none; /* Hide retro badges in modern mode */
 }
